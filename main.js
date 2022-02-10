@@ -10,7 +10,7 @@
 
     self.Board.prototype = { //Se crean funciones o metodos para el proto de la clase Board
         get elements(){
-            var elements = this.bars;
+            var elements = this.bars.map(function(bar){return bar;});
             elements.push(this.ball);
             return elements; //Retorna las barras y la pelota 
         }
@@ -25,8 +25,18 @@
         this.speed_y = 0;
         this.speed_x = 3;
         this.board = board;
+        this.direction = 1;
+
         board.ball = this;
         this.kind = "circle";
+    }
+    
+    self.Ball.prototype = { //Se crea la funcion de mover la pelota.
+        move: function(){
+            this.x += (this.speed_x * this.direction);
+            this.y += (this.speed_y * this.direction);
+        }
+
     }
 
 
@@ -78,8 +88,11 @@
             }
         },
         play : function(){
-            this.clean();
-            this.draw();
+            if(this.board.playing){
+                this.clean();
+                this.draw();
+                this.board.ball.move();
+            }
         }
     }
 
@@ -109,26 +122,33 @@ var board_view = new BoardView(canvas,board); //Se instancia la clase BoardView 
 var ball = new Ball(350,100,10, board); //Se instancia la clase Ball 
 
 document.addEventListener("keydown",function(ev){
-    ev.preventDefault();
-    if(ev.keyCode == 38) {
+    
+    if(ev.keyCode === 38) {
+        ev.preventDefault();
         bar.up();
-    }else if (ev.keyCode == 40){
+    }else if (ev.keyCode === 40){
+        ev.preventDefault();
         bar.down();
     }
     // Tecla W
-    else if (ev.keyCode == 87){ 
+    else if (ev.keyCode === 87){ 
+        ev.preventDefault();
         bar_2.up();
     }//Tecla S
-    else if (ev.keyCode == 83){
+    else if (ev.keyCode === 83){
+        ev.preventDefault();
         bar_2.down();
+    }else if (ev.keyCode === 32){ //Se agrega la pausa.
+        ev.preventDefault;
+        board.playing = !board.playing;
     }
 
-
-    console.log("1. " + bar);
-    console.log("2. " + bar_2);
 });
 
 window.requestAnimationFrame(controller);
+setTimeout(function(){
+    ball.direction = -1;
+},4000);
 
 function controller(){
     board_view.play();
