@@ -26,14 +26,18 @@
         this.board = board;
         this.board.bars.push(this);
         this.kind = "rectangle";
+        this.speed = 10; //Se creo la variable speed para sumar o restar esta cantidad a la posición
     }
 
     self.Bar.prototype = { //Se crea para subir o bajar el objeto creado con la clase Bar.
         down: function(){
-
+            this.y += this.speed;
         },
         up: function(){
-
+            this.y -= this.speed;
+        },
+        toString: function(){
+            return "x: " + this.x + " y: " + this.y ;
         }
     }
 })();
@@ -56,7 +60,7 @@
         }
     }
 
-    function draw(ctx,element){
+    function draw(ctx,element){ //Dibuja el elemento.
         if(element !== null && element.hasOwnProperty("kind")){    
             switch(element.kind){
                 case "rectangle":
@@ -69,15 +73,26 @@
     
 })();
 
+var board = new Board(800,400); //Se instancia y se le dan los parametros de la clase board
+var bar = new Bar(20,100,40,100,board); //Se crea el objeto bar para crear el rectangulo
+var bar = new Bar(735,100,40,100,board); //Se crea el objeto bar para crear el rectangulo
+var canvas = document.getElementById('canvas'); //Se obtiene el elemento canvas del html
+var board_view = new BoardView(canvas,board); //Se instancia la clase BoardView y se utiliza el controlador.
+
+document.addEventListener("keydown",function(ev){
+    if(ev.keyCode == 38) {
+        bar.up();
+    }else if (ev.keyCode == 40){
+        bar.down();
+    }
+    console.log(bar.toString());
+});
+
 addEventListener("load", main); // Se ejecuta la función main
 
 function main(){
-    var board = new Board(800,400); //Se instancia y se le dan los parametros de la clase board
-    var bar = new Bar(20,100,40,100,board); //Se crea el objeto bar para crear el rectangulo
-    var bar = new Bar(735,100,40,100,board); //Se crea el objeto bar para crear el rectangulo
-    var canvas = document.getElementById('canvas'); //Se obtiene el elemento canvas del html
-    var board_view = new BoardView(canvas,board); //Se instancia la clase BoardView y se utiliza el controlador.
-
+    console.log("Hola Mundo");
+    console.log(board);
     board_view.draw();
 
 }
