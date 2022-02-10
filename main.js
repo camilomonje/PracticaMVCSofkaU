@@ -17,6 +17,27 @@
     }
 })();
 
+(function(){ //Clase para crear objetos dentro del board.
+    self.Bar = function(x,y,width,height,board){
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.board = board;
+        this.board.bars.push(this);
+        this.kind = "rectangle";
+    }
+
+    self.Bar.prototype = { //Se crea para subir o bajar el objeto creado con la clase Bar.
+        down: function(){
+
+        },
+        up: function(){
+
+        }
+    }
+})();
+
 (function(){  //Se crea clase para dibujar en pantalla --> Controlador.
     self.BoardView = function(canvas,board){
         this.canvas = canvas;
@@ -26,6 +47,25 @@
         this.ctx = canvas.getContext("2d");
     }
 
+    self.BoardView.prototype = { //Se crea para llamar la funcion draw y parsarle los elementos.
+        draw: function(){
+            for(var i = this.board.elements.length -1; i>= 0; i--){
+                var el = this.board.elements[i];
+                draw(this.ctx,el);
+            }
+        }
+    }
+
+    function draw(ctx,element){
+        if(element !== null && element.hasOwnProperty("kind")){    
+            switch(element.kind){
+                case "rectangle":
+                    ctx.fillRect(element.x,element.y,element.width,element.height);
+                    break;
+            }
+        }
+    }
+
     
 })();
 
@@ -33,8 +73,12 @@ addEventListener("load", main); // Se ejecuta la función main
 
 function main(){
     var board = new Board(800,400); //Se instancia y se le dan los parametros de la clase board
+    var bar = new Bar(20,100,40,100,board); //Se crea el objeto bar para crear el rectangulo
+    var bar = new Bar(735,100,40,100,board); //Se crea el objeto bar para crear el rectangulo
     var canvas = document.getElementById('canvas'); //Se obtiene el elemento canvas del html
     var board_view = new BoardView(canvas,board); //Se instancia la clase BoardView y se utiliza el controlador.
+
+    board_view.draw();
 
 }
 
